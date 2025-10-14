@@ -1,15 +1,13 @@
 const form = document.getElementById("produtoForm");
 const nomeInput = document.getElementById("nomeProduto");
-const precoInput = document.getElementById("precoPoduto"); // Criação das variáveis 
+const precoInput = document.getElementById("precoPoduto");
 const tabela = document.getElementById("tabelaProdutos");
 const gerarBtn = document.getElementById("gerarBtn");
 const gerarPDFBtn = document.getElementById("gerarPDF");
 
 let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
-// Tenta buscar no armazenamento local (localStorage) um item chamado "produtos".
-// Se existir, ele é convertido de texto (JSON) para um array JavaScript.
-// Caso não exista nada salvo (retorne null), é criado um array vazio [].
 
+// === Renderizar Tabela ===
 function renderTabela() {
     tabela.innerHTML = produtos.map(produto => ` 
         <tr>                               
@@ -24,17 +22,19 @@ function renderTabela() {
             </td>
         </tr>
     `).join("");
-    localStorage.setItem("produtos", JSON.stringify(produtos)); // salva no localstorage 
+    localStorage.setItem("produtos", JSON.stringify(produtos));
 } 
 
+// === Gerar Código de Barras e QR Code ===
 function gerarCodigo(nome, preco) {             
     const id = Date.now();
 
-    // Código de barras
-    const canvasBar = document.createElement("canvas"); // Cria um elemento <canvas> temporário
-    JsBarcode(canvasBar, id.toString(), { format: "CODE128" }); // Gera um código de barras com base no ID e desenha no canvas
-    const barcode = canvasBar.toDataURL("image/png"); // Converte o código de barras desenhado em uma imagem (base64)
+    const inicio = performance.now();
 
+    // Código de barras
+    const canvasBar = document.createElement("canvas");
+    JsBarcode(canvasBar, id.toString(), { format: "CODE128" });
+    const barcode = canvasBar.toDataURL("image/png");
 
     // QR Code
     const qrDiv = document.createElement("div");
@@ -44,9 +44,15 @@ function gerarCodigo(nome, preco) {
         const qrImg = qrDiv.querySelector("img").src;
         produtos.push({ id, nome, preco, barcode, qrcode: qrImg });
         renderTabela();
+
+        const fim = performance.now();
+        const tempoTotal = (fim - inicio).toFixed(2);
+        console.log(`⏱️ Tempo para adicionar e renderizar o produto: ${tempoTotal} ms`);
+        alert(`Produto adicionado em ${tempoTotal} milissegundos.`);
     }, 100);
 }
 
+// === Adicionar Produto ===
 form.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -71,28 +77,50 @@ form.addEventListener("submit", (e) => {
     precoInput.value = "";
 });
 
-// === Editar produto ===
+// === Editar Produto ===
 function editarProduto(id) {
     const produto = produtos.find(p => p.id === id);
     const novoNome = prompt("Digite o novo nome:", produto.nome);
-    if (!novoNome) return;
+    if (novoNome === null) return; // cancelou
+    if (!novoNome.trim()) return alert("O nome não pode ficar vazio!");
+
+    const novoPreco = prompt("Digite o novo preço:", produto.preco);
+    if (novoPreco === null) return; // cancelou
+    if (!novoPreco.trim()) return alert("O preço não pode ficar vazio!");
 
     const jaExiste = produtos.some(
         p => p.nome.toLowerCase() === novoNome.toLowerCase() && p.id !== id
     );
     if (jaExiste) return alert("Já existe um produto com esse nome!");
 
-    produto.nome = novoNome;
-    renderTabela();
+    // Atualiza nome e preço
+    produto.nome = novoNome.trim();
+    produto.preco = novoPreco.trim();
+
+    // === REGERAR CÓDIGO DE BARRAS E QR CODE ===
+    const canvasBar = document.createElement("canvas");
+    JsBarcode(canvasBar, produto.id.toString(), { format: "CODE128" });
+    produto.barcode = canvasBar.toDataURL("image/png");
+
+    const qrDiv = document.createElement("div");
+    new QRCode(qrDiv, { text: produto.id.toString(), width: 100, height: 100 });
+
+    setTimeout(() => {
+        const qrImg = qrDiv.querySelector("img").src;
+        produto.qrcode = qrImg;
+        renderTabela();
+        alert("Produto atualizado com sucesso!");
+    }, 100);
 }
 
+// === Excluir Produto ===
 function deletarProduto(id) {
     if (!confirm("Deseja realmente excluir este produto?")) return;
     produtos = produtos.filter(p => p.id !== id);
     renderTabela();
 }
 
-// === PDF ===
+// === Gerar PDF ===
 async function gerarPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -123,62 +151,12 @@ async function gerarPDF() {
     doc.save("equipamentos.pdf");
 }
 
+// === Botões ===
 gerarBtn.addEventListener("click", () => {
     form.dispatchEvent(new Event("submit"));
 });
 
 gerarPDFBtn.addEventListener("click", gerarPDF);
 
-function editarProduto(id) {
-    const produto = produtos.find(p => p.id === id);
-    const novoNome = prompt("Digite o novo nome:", produto.nome);
-    if (novoNome === null) return; // cancelou
-    if (!novoNome.trim()) return alert("O nome não pode ficar vazio!");
-
-    const novoPreco = prompt("Digite o novo preço:", produto.preco);
-    if (novoPreco === null) return; // cancelou
-    if (!novoPreco.trim()) return alert("O preço não pode ficar vazio!");
-
-    const jaExiste = produtos.some(
-        p => p.nome.toLowerCase() === novoNome.toLowerCase() && p.id !== id
-    );
-    if (jaExiste) return alert("Já existe um produto com esse nome!");
-
-    produto.nome = novoNome.trim();
-    produto.preco = novoPreco.trim();
-
-    renderTabela();
-    function gerarCodigo(nome, preco) {             
-    const id = Date.now();
-
-    // Inicia a medição de tempo
-    const inicio = performance.now();
-
-    // Código de barras
-    const canvasBar = document.createElement("canvas");
-    JsBarcode(canvasBar, id.toString(), { format: "CODE128" });
-    const barcode = canvasBar.toDataURL("image/png");
-
-    // QR Code
-    const qrDiv = document.createElement("div");
-    new QRCode(qrDiv, { text: id.toString(), width: 100, height: 100 });
-
-    setTimeout(() => {
-        const qrImg = qrDiv.querySelector("img").src;
-
-        produtos.push({ id, nome, preco, barcode, qrcode: qrImg });
-
-        renderTabela();
-
-        // Calcula o tempo total gasto
-        const fim = performance.now();
-        const tempoTotal = (fim - inicio).toFixed(2);
-
-        console.log(`⏱️ Tempo para adicionar e renderizar o produto: ${tempoTotal} ms`);
-        alert(`Produto adicionado em ${tempoTotal} milissegundos.`);
-    }, 100);
-}
-
-}
-
+// === Render inicial ===
 renderTabela();
