@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Equipamentos</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="website icon" type="png" href="images.png"> <!--Colocando no Head para carregar primeiro na página-->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script> <!--Gera código de barras em formato de CODE128-->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script> <!-- Biblioteca para gerar QRCode -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> <!-- Biblioteca para criar e exportar arquivos PDF diretamente no navegador -->
+</head>
+<body>
+    <div class="container">
+        <h1>Gestão de Equipamentos - Marcearia Bom Preço</h1>
+        <form id="produtoForm">
+            <input type="text" id="nomeProduto" placeholder="Nome do Equipamento" required>
+            <input type="number" id="precoPoduto" placeholder="Preço do Produto"  required>
+            <button type="button" id="gerarBtn">Gerar ID</button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                    <th>Código de Barras</th>
+                    <th>QR Code</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tabelaProdutos"></tbody>
+        </table>
+        <button id="gerarPDF">Exportar PDF</button>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>

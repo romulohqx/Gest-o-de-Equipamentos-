@@ -1,0 +1,271 @@
+/* ===== RESET ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ===== BODY ===== */
+body {
+    background-color: #eb792d;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centraliza verticalmente */
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 74, 141, 0.2);
+    width: 100%;
+    max-width: 950px;
+    padding: 30px;
+    border-top: 6px solid #f7931e;
+}
+
+/* ===== TÍTULO ===== */
+h1 {
+    text-align: center;
+    color: #004a8d;
+    margin-bottom: 25px;
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ===== FORMULÁRIO ===== */
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="number"] {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px;
+    border: 2px solid #004a8d;
+    border-radius: 8px;
+    outline: none;
+    transition: 0.3s;
+    font-size: 15px;
+    color: #333;
+    background-color: #f9f9f9;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+    border-color: #f7931e;
+    box-shadow: 0 0 6px rgba(247, 147, 30, 0.5);
+}
+
+input::placeholder {
+    color: #888;
+}
+
+/* ===== BOTÕES ===== */
+button {
+    background-color: #004a8d;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #f7931e;
+    transform: scale(1.05);
+}
+
+button.edit {
+    background-color: #f7931e;
+    margin-right: 5px;
+    color: #fff;
+}
+
+button.delete {
+    background-color: #b80000;
+}
+
+button.edit:hover {
+    background-color: #d87e00;
+}
+
+button.delete:hover {
+    background-color: #800000;
+}
+
+#gerarPDF {
+    width: 100%;
+    margin-top: 15px;
+}
+
+/* ===== TABELA ===== */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    min-width: 600px; /* garante boa visualização em telas pequenas */
+}
+
+thead {
+    background-color: #004a8d;
+    color: white;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    word-wrap: break-word;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: rgba(247, 147, 30, 0.1);
+    transition: 0.3s;
+}
+
+td img {
+    width: 100px;
+    height: auto;
+}
+
+/* ===== MEDIA QUERIES ===== */
+
+/* Telas menores que 768px (tablets e celulares) */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+        align-items: flex-start;
+    }
+
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    form {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    button {
+        width: 100%;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    table {
+        font-size: 14px;
+        min-width: 550px;
+    }
+
+    td img {
+        width: 80px;
+    }
+}
+
+/* Celulares muito pequenos (<480px) */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.3rem;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    button {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    table {
+        font-size: 12px;
+        min-width: 480px;
+    }
+
+    td img {
+        width: 65px;
+    }
+}
+@media (max-width: 350px) {
+    body {
+        padding: 5px;
+    }
+
+    .container {
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+    h1 {
+        font-size: 1.1rem;
+        line-height: 1.3;
+    }
+
+    form {
+        gap: 8px;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+        font-size: 12px;
+        padding: 7px;
+        min-width: unset;
+        width: 100%;
+    }
+
+    button {
+        font-size: 12px;
+        padding: 7px;
+        width: 100%;
+    }
+
+    table {
+        font-size: 11px;
+        min-width: 400px;
+    }
+
+    td img {
+        width: 55px;
+    }
+}
